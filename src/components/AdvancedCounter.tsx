@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 // Styles for our counter component
 const styles = {
@@ -41,25 +41,52 @@ const styles = {
 
 const AdvancedCounter: React.FC = () => {
   // State for the current count value
-  // useState returns an array: [currentValue, setterFunction]
-  const [count, setCount] = useState<number>(0)
+  // Initialize from localStorage if available
+  const [count, setCount] = useState<number>(() => {
+    const savedCount = localStorage.getItem('counter-value')
+    return savedCount ? parseInt(savedCount, 10) : 0
+  })
   
   // State for tracking history of all count values
-  // We initialize with [0] since our initial count is 0
-  const [history, setHistory] = useState<number[]>([0])
+  // Initialize from localStorage if available
+  const [history, setHistory] = useState<number[]>(() => {
+    const savedHistory = localStorage.getItem('counter-history')
+    return savedHistory ? JSON.parse(savedHistory) : [count]
+  })
+
+  // State to track if save is in progress
+  const [isSaving, setIsSaving] = useState<boolean>(false)
+
+  // useEffect to auto-save count and history to localStorage
+  useEffect(() => {
+    // Set saving indicator
+    setIsSaving(true)
+    
+    // Create a timer to simulate async save operation
+    const saveTimer = setTimeout(() => {
+      localStorage.setItem('counter-value', count.toString())
+      localStorage.setItem('counter-history', JSON.stringify(history))
+      setIsSaving(false)
+    }, 500) // 500ms delay to show saving state
+
+    // Cleanup function to cancel save if component unmounts or state changes
+    return () => {
+      clearTimeout(saveTimer)
+    }
+  }, [count, history]) // Dependencies: run effect when count or history changes
 
   // Handler function for incrementing the count
   const handleIncrement = () => {
     const newCount = count + 1
-    setCount(newCount) // Updates count to current value + 1
-    setHistory([...history, newCount]) // Add new count to history
+    setCount(newCount)
+    setHistory([...history, newCount])
   }
 
   // Handler function for decrementing the count
   const handleDecrement = () => {
     const newCount = count - 1
-    setCount(newCount) // Updates count to current value - 1
-    setHistory([...history, newCount]) // Add new count to history
+    setCount(newCount)
+    setHistory([...history, newCount])
   }
 
   return (
@@ -92,6 +119,15 @@ const AdvancedCounter: React.FC = () => {
         </button>
       </div>
 
+      {/* Save indicator */}
+      <div style={{ marginTop: '1rem', height: '20px' }}>
+        {isSaving && (
+          <span style={{ color: '#4CAF50', fontStyle: 'italic' }}>
+            Changes saved.
+          </span>
+        )}
+      </div>
+
       {/* History section */}
       <div style={{ marginTop: '2rem' }}>
         <h3>Count History:</h3>
@@ -115,7 +151,6 @@ const AdvancedCounter: React.FC = () => {
       <div style={{ marginTop: '2rem', fontSize: '0.9rem', color: '#666' }}>
         <p>Additional features coming soon:</p>
         <ul style={{ textAlign: 'left', display: 'inline-block' }}>
-          <li>Auto-save to localStorage</li>
           <li>Keyboard navigation</li>
           <li>Reset functionality</li>
           <li>Custom step value</li>
