@@ -1,4 +1,6 @@
-markdown# Advanced React Counter
+# Advanced React Counter
+
+🔗 **Live Demo**: [https://bvega.github.io/lab1-react-counter/](https://bvega.github.io/lab1-react-counter/)
 
 A feature-rich counter application built with React, TypeScript, and Vite. This project demonstrates advanced React concepts including hooks, state management, side effects, and event handling.
 
@@ -12,17 +14,13 @@ A feature-rich counter application built with React, TypeScript, and Vite. This 
 - **Reset Functionality**: Clear counter and history with one click
 - **Responsive Design**: Clean, modern UI that works on all devices
 
-## 📸 Screenshots
-
-![Counter Demo](https://via.placeholder.com/600x400?text=Counter+Screenshot)
-*Screenshot showing the counter interface with all features*
-
 ## 🛠️ Technologies Used
 
 - **React 18**: Modern React with functional components
 - **TypeScript**: Type-safe development
 - **Vite**: Fast build tool and development server
 - **CSS-in-JS**: Inline styling for component encapsulation
+- **GitHub Pages**: Free hosting for the live demo
 
 ## 📋 Prerequisites
 
@@ -36,42 +34,46 @@ Before you begin, ensure you have the following installed:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/lab1-react-counter.git
+   git clone https://github.com/bvega/lab1-react-counter.git
    cd lab1-react-counter
+   ```
 
-Install dependencies
-bashnpm install
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-Start the development server
-bashnpm run dev
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
 
-Open your browser
-Navigate to http://localhost:5173
+4. **Open your browser**
+   Navigate to `http://localhost:5173`
 
-🎯 Usage
-Basic Operations
+## 🎯 Usage
 
-Click Increment to increase the counter
-Click Decrement to decrease the counter
-Click Reset to return to 0 and clear history
+### Basic Operations
+- Click **Increment** to increase the counter
+- Click **Decrement** to decrease the counter
+- Click **Reset** to return to 0 and clear history
 
-Keyboard Shortcuts
+### Keyboard Shortcuts
+- `↑` (ArrowUp): Increment counter
+- `↓` (ArrowDown): Decrement counter
 
-↑ (ArrowUp): Increment counter
-↓ (ArrowDown): Decrement counter
+### Custom Step Value
+1. Enter a number in the "Step Value" input
+2. The counter will now increment/decrement by that amount
 
-Custom Step Value
+### History
+- All counter values are automatically tracked
+- History persists across page refreshes
+- Scroll through history if it exceeds the view area
 
-Enter a number in the "Step Value" input
-The counter will now increment/decrement by that amount
+## 📁 Project Structure
 
-History
-
-All counter values are automatically tracked
-History persists across page refreshes
-Scroll through history if it exceeds the view area
-
-📁 Project Structure
+```
 lab1-react-counter/
 ├── src/
 │   ├── components/
@@ -81,19 +83,27 @@ lab1-react-counter/
 │   ├── index.css                   # Global styles
 │   └── main.tsx                    # Application entry point
 ├── public/                         # Static assets
+├── dist/                           # Production build (generated)
 ├── index.html                      # HTML template
 ├── package.json                    # Project dependencies
 ├── tsconfig.json                   # TypeScript configuration
 ├── vite.config.ts                  # Vite configuration
 └── README.md                       # This file
-🔍 Code Highlights
-useState Hook
-typescriptconst [count, setCount] = useState<number>(() => {
+```
+
+## 🔍 Code Highlights
+
+### useState Hook with Lazy Initialization
+```typescript
+const [count, setCount] = useState<number>(() => {
   const savedCount = localStorage.getItem('counter-value')
   return savedCount ? parseInt(savedCount, 10) : 0
 })
-useEffect Hook with Cleanup
-typescriptuseEffect(() => {
+```
+
+### useEffect Hook with Cleanup
+```typescript
+useEffect(() => {
   const handleKeyPress = (event: KeyboardEvent) => {
     if (event.key === 'ArrowUp') handleIncrement()
     else if (event.key === 'ArrowDown') handleDecrement()
@@ -102,61 +112,69 @@ typescriptuseEffect(() => {
   document.addEventListener('keydown', handleKeyPress)
   return () => document.removeEventListener('keydown', handleKeyPress)
 }, [count, history, step])
-🧪 Available Scripts
+```
 
-npm run dev - Start development server
-npm run build - Build for production
-npm run preview - Preview production build
-npm run lint - Run ESLint
+## 🧪 Available Scripts
 
-📚 Learning Resources
-This project demonstrates several important React concepts:
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run deploy` - Deploy to GitHub Pages
+- `npm run lint` - Run ESLint
 
-State Management
+## 📚 Learning Outcomes
 
-Using useState for local state
-Lazy state initialization
-Managing multiple related states
+This project demonstrates:
 
+1. **State Management**
+   - Using `useState` for local state
+   - Lazy state initialization
+   - Managing multiple related states
 
-Side Effects
+2. **Side Effects**
+   - Using `useEffect` for localStorage persistence
+   - Event listener management
+   - Cleanup functions to prevent memory leaks
 
-Using useEffect for localStorage
-Event listener management
-Cleanup functions
+3. **Event Handling**
+   - Click events
+   - Keyboard events
+   - Form input handling with validation
 
+4. **TypeScript Integration**
+   - Type-safe React components
+   - Event type definitions
+   - Generic types with hooks
 
-Event Handling
+## 🚀 Deployment
 
-Click events
-Keyboard events
-Form input handling
+This project is deployed using GitHub Pages. To deploy your own version:
 
+1. Fork this repository
+2. Update `vite.config.ts` with your repository name
+3. Run `npm run deploy`
+4. Enable GitHub Pages in repository settings
 
-TypeScript Integration
+## 🤝 Contributing
 
-Type-safe components
-Event type definitions
-Generic types with hooks
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
+## 📝 License
 
+This project is created for educational purposes as part of Module 10 Lab Assignment.
 
-🤝 Contributing
+## 🙏 Acknowledgments
 
-Fork the repository
-Create your feature branch (git checkout -b feature/AmazingFeature)
-Commit your changes (git commit -m 'Add some AmazingFeature')
-Push to the branch (git push origin feature/AmazingFeature)
-Open a Pull Request
+- Built as part of RTT-23 Module 10 Lab Assignment
+- React documentation for excellent guides
+- Vite team for the amazing build tool
 
-📝 License
-This project is licensed under the MIT License - see the LICENSE file for details.
-🙏 Acknowledgments
+---
 
-Built as part of Module 10 Lab Assignment
-React documentation for excellent guides
-Vite team for the amazing build tool
-
-📞 Contact
-Your Name - @yourtwitter - email@example.com
-Project Link: https://github.com/Bvega/lab1-react-counter
+**Developed by**: B. Vega  
+**Course**: RTT-23 Module 10  
+**Date**: June 2025
