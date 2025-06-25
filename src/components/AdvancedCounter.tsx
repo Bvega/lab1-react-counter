@@ -89,6 +89,26 @@ const AdvancedCounter: React.FC = () => {
     setHistory([...history, newCount])
   }
 
+  // useEffect for keyboard navigation
+  useEffect(() => {
+    // Define the keyboard event handler
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowUp') {
+        handleIncrement()
+      } else if (event.key === 'ArrowDown') {
+        handleDecrement()
+      }
+    }
+
+    // Add event listener to document
+    document.addEventListener('keydown', handleKeyPress)
+
+    // Cleanup function to remove event listener
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [count, history]) // Dependencies ensure we use current values
+
   return (
     <div style={styles.container}>
       <h2>Counter</h2>
@@ -147,11 +167,15 @@ const AdvancedCounter: React.FC = () => {
         </div>
       </div>
 
+      {/* Keyboard navigation hint */}
+      <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>
+        <p>Use ArrowUp to increment and ArrowDown to decrement.</p>
+      </div>
+
       {/* Placeholder for remaining features */}
       <div style={{ marginTop: '2rem', fontSize: '0.9rem', color: '#666' }}>
         <p>Additional features coming soon:</p>
         <ul style={{ textAlign: 'left', display: 'inline-block' }}>
-          <li>Keyboard navigation</li>
           <li>Reset functionality</li>
           <li>Custom step value</li>
         </ul>
