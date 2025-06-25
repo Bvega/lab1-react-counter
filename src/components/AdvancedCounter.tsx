@@ -29,13 +29,19 @@ const styles = {
     borderRadius: '4px',
     backgroundColor: '#2196F3',
     color: 'white',
-    transition: 'background-color 0.3s'
-  },
-  buttonHover: {
-    backgroundColor: '#1976D2'
+    transition: 'background-color 0.3s',
+    cursor: 'pointer'
   },
   resetButton: {
     backgroundColor: '#f44336'
+  },
+  stepInput: {
+    padding: '0.5rem',
+    fontSize: '1rem',
+    borderRadius: '4px',
+    border: '1px solid #ddd',
+    width: '100px',
+    textAlign: 'center'
   }
 }
 
@@ -57,7 +63,13 @@ const AdvancedCounter: React.FC = () => {
   // State to track if save is in progress
   const [isSaving, setIsSaving] = useState<boolean>(false)
 
-  // useEffect to auto-save count and history to localStorage
+  // State for custom step value
+  const [step, setStep] = useState<number>(() => {
+    const savedStep = localStorage.getItem('counter-step')
+    return savedStep ? parseInt(savedStep, 10) : 1
+  })
+
+  // useEffect to auto-save count, history, and step to localStorage
   useEffect(() => {
     // Set saving indicator
     setIsSaving(true)
@@ -66,6 +78,7 @@ const AdvancedCounter: React.FC = () => {
     const saveTimer = setTimeout(() => {
       localStorage.setItem('counter-value', count.toString())
       localStorage.setItem('counter-history', JSON.stringify(history))
+      localStorage.setItem('counter-step', step.toString())
       setIsSaving(false)
     }, 500) // 500ms delay to show saving state
 
@@ -73,20 +86,35 @@ const AdvancedCounter: React.FC = () => {
     return () => {
       clearTimeout(saveTimer)
     }
-  }, [count, history]) // Dependencies: run effect when count or history changes
+  }, [count, history, step]) // Dependencies: run effect when any of these change
 
   // Handler function for incrementing the count
   const handleIncrement = () => {
-    const newCount = count + 1
+    const newCount = count + step
     setCount(newCount)
-    setHistory([...history, newCount])
+    setHistory(prevHistory => [...prevHistory, newCount])
   }
 
   // Handler function for decrementing the count
   const handleDecrement = () => {
-    const newCount = count - 1
+    const newCount = count - step
     setCount(newCount)
-    setHistory([...history, newCount])
+    setHistory(prevHistory => [...prevHistory, newCount])
+  }
+
+  // Handler function for resetting the counter
+  const handleReset = () => {
+    setCount(0)
+    setHistory([0])
+  }
+
+  // Handler for step input change
+  const handleStepChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newStep = parseInt(e.target.value, 10)
+    // Only update if it's a valid number
+    if (!isNaN(newStep) && newStep > 0) {
+      setStep(newStep)
+    }
   }
 
   // useEffect for keyboard navigation
@@ -107,7 +135,7 @@ const AdvancedCounter: React.FC = () => {
     return () => {
       document.removeEventListener('keydown', handleKeyPress)
     }
-  }, [count, history]) // Dependencies ensure we use current values
+  }, [count, history, step]) // Dependencies ensure we use current values
 
   return (
     <div style={styles.container}>
@@ -137,6 +165,30 @@ const AdvancedCounter: React.FC = () => {
         >
           Increment
         </button>
+
+        <button 
+          style={{...styles.button, ...styles.resetButton}}
+          onClick={handleReset}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d32f2f'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f44336'}
+        >
+          Reset
+        </button>
+      </div>
+
+      {/* Step value input */}
+      <div style={{ marginTop: '1rem' }}>
+        <label htmlFor="step-input" style={{ marginRight: '0.5rem' }}>
+          Step Value:
+        </label>
+        <input
+          id="step-input"
+          type="number"
+          min="1"
+          value={step}
+          onChange={handleStepChange}
+          style={styles.stepInput}
+        />
       </div>
 
       {/* Save indicator */}
@@ -170,15 +222,6 @@ const AdvancedCounter: React.FC = () => {
       {/* Keyboard navigation hint */}
       <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>
         <p>Use ArrowUp to increment and ArrowDown to decrement.</p>
-      </div>
-
-      {/* Placeholder for remaining features */}
-      <div style={{ marginTop: '2rem', fontSize: '0.9rem', color: '#666' }}>
-        <p>Additional features coming soon:</p>
-        <ul style={{ textAlign: 'left', display: 'inline-block' }}>
-          <li>Reset functionality</li>
-          <li>Custom step value</li>
-        </ul>
       </div>
     </div>
   )
