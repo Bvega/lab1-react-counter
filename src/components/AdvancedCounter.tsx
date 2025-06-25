@@ -43,15 +43,23 @@ const AdvancedCounter: React.FC = () => {
   // State for the current count value
   // useState returns an array: [currentValue, setterFunction]
   const [count, setCount] = useState<number>(0)
+  
+  // State for tracking history of all count values
+  // We initialize with [0] since our initial count is 0
+  const [history, setHistory] = useState<number[]>([0])
 
   // Handler function for incrementing the count
   const handleIncrement = () => {
-    setCount(count + 1) // Updates count to current value + 1
+    const newCount = count + 1
+    setCount(newCount) // Updates count to current value + 1
+    setHistory([...history, newCount]) // Add new count to history
   }
 
   // Handler function for decrementing the count
   const handleDecrement = () => {
-    setCount(count - 1) // Updates count to current value - 1
+    const newCount = count - 1
+    setCount(newCount) // Updates count to current value - 1
+    setHistory([...history, newCount]) // Add new count to history
   }
 
   return (
@@ -84,13 +92,32 @@ const AdvancedCounter: React.FC = () => {
         </button>
       </div>
 
-      {/* Placeholder for additional features */}
+      {/* History section */}
+      <div style={{ marginTop: '2rem' }}>
+        <h3>Count History:</h3>
+        <div style={{ 
+          backgroundColor: '#f5f5f5', 
+          padding: '1rem', 
+          borderRadius: '4px',
+          maxHeight: '100px',
+          overflowY: 'auto'
+        }}>
+          {history.map((value, index) => (
+            <span key={index} style={{ margin: '0 4px' }}>
+              {value}
+              {index < history.length - 1 && ','}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Placeholder for remaining features */}
       <div style={{ marginTop: '2rem', fontSize: '0.9rem', color: '#666' }}>
         <p>Additional features coming soon:</p>
         <ul style={{ textAlign: 'left', display: 'inline-block' }}>
-          <li>History tracking</li>
           <li>Auto-save to localStorage</li>
           <li>Keyboard navigation</li>
+          <li>Reset functionality</li>
           <li>Custom step value</li>
         </ul>
       </div>
